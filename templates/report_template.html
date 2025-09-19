@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vulnerability Report - {{ report.target }}</title>
+  <style>
+    /* minimal inline CSS fallback */
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #222; }
+    .summary { border: 1px solid #ddd; padding: 10px; margin-bottom: 20px;}
+    .finding { border-left: 4px solid #f5c; padding: 8px; margin: 6px 0;}
+    .sev-Critical { border-color: #b00020; background: #ffecec; }
+    .sev-High { border-color: #ff6b00; background: #fff3e6; }
+    .sev-Medium { border-color: #f0ad4e; background: #fff8e6; }
+    .sev-Low { border-color: #6c757d; background: #f6f6f6; }
+    table { border-collapse: collapse; width:100%;}
+    th, td { border: 1px solid #ddd; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Vulnerability Report</h1>
+  <div class="summary">
+    <strong>Target:</strong> {{ report.target }}<br/>
+    <strong>Summary score:</strong> {{ report.summary_score }}<br/>
+    <strong>Generated at:</strong> {{ generated_at }}
+  </div>
+
+  {% for r in report.results %}
+  <h2>{{ r.url }} (score: {{ r.severity_score }})</h2>
+  <h3>Findings</h3>
+  {% if r.findings %}
+    {% for f in r.findings %}
+      <div class="finding sev-{{ f.severity }}">
+        <strong>{{ f.type }}</strong> — {{ f.description if f.description else "" }}
+        <div>Severity: {{ f.severity }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div>No findings on this page.</div>
+  {% endif %}
+
+  <h3>SSL/TLS</h3>
+  <pre>{{ r.ssl }}</pre>
+
+  <h3>Shodan (if any)</h3>
+  <pre>{{ r.shodan }}</pre>
+  <hr/>
+  {% endfor %}
+</body>
+</html>
